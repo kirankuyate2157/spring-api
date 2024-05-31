@@ -1,10 +1,9 @@
 package com.kiran.crud;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Objects;
+import java.io.InputStream;
+import java.util.Base64;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,13 +15,15 @@ import com.google.firebase.FirebaseOptions;
 @SpringBootApplication
 public class ServerApplication {
 
-    public static void main(String[] args) throws FileNotFoundException {
-        ClassLoader classLoader = ServerApplication.class.getClassLoader();
-
-        File file = new File(Objects.requireNonNull(classLoader.getResource("serviceAccountKey.json")).getFile());
-        FileInputStream serviceAccount = new FileInputStream(file.getAbsolutePath());
-
+    public static void main(String[] args) {
         try {
+            String firebaseConfig = System.getenv("FIREBASE_CONFIG");
+            if (firebaseConfig == null) {
+                throw new IllegalArgumentException("Environment variable FIREBASE_CONFIG is not set.");
+            }
+
+            InputStream serviceAccount = new ByteArrayInputStream(Base64.getDecoder().decode(firebaseConfig));
+
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseOptions options = new FirebaseOptions.Builder()
                         .setCredentials(GoogleCredentials.fromStream(serviceAccount))
