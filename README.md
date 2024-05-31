@@ -2,7 +2,7 @@
 
 This repository contains a Spring Boot application for a CRUD API that interacts with a Firebase Database to manage users and their subject marks.
 
-
+###### API base endpoint : `https://spring-firebase-api.onrender.com`
 
 ### Endpoints
 
